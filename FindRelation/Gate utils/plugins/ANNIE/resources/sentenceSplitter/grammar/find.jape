@@ -1,0 +1,24 @@
+
+Phase:	find
+Input: Token SpaceToken keyword DEFAULT_TOKEN
+Options: control = appelt
+
+Macro: FULLSTOP
+(
+	{Token.string=="class"}
+	
+ )
+Macro: PUNCT
+(
+  {Token.string == "!"} |
+  {Token.string == "?"}
+)
+
+ 
+//normal sentence split 
+Rule: Split1
+(
+FULLSTOP
+) :split
+-->
+:split.Split = {kind = "internal"}

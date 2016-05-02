@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="Gate utils/lib/ant-contrib.jar"/>
+	<classpathentry kind="lib" path="Gate utils/lib/ant-launcher.jar"/>
+	<classpathentry kind="lib" path="Gate utils/lib/ant.jar"/>
+	<classpathentry kind="lib" path="Gate utils/lib/aopalliance.jar"/>
+	<classpathentry kind="lib" path="Gate utils/lib/apache-mime4j-core.jar"/>
+	<classpathentry kind="lib" path="Gate utils/lib/apache-mime4j-dom.jar"/>
+	<classpathentry kind="lib" path="Gate utils/lib/bcmail-jdk15.jar"/>
+	<classpathentry kind="lib" path="Gate utils/lib/bcprov-jdk15.jar"/>
+	<classpathentry kind="lib" path="Gate utils/lib/commons-codec.jar"/>
+	<classpathentry kind="lib" path="Gate utils/lib/commons-compress.jar"/>
+	<classpathentry kind="lib" path="Gate utils/lib/commons-io.jar"/>
+	<classpathentry kind="lib" path="Gate utils/lib/commons-lang.jar"/>
+	<classpathentry kind="lib" path="Gate utils/lib/commons-logging.jar"/>
+	<classpathentry kind="lib" path="Gate utils/lib/dom4j.jar"/>
+	<classpathentry kind="lib" path="Gate utils/lib/fontbox.jar"/>
+	<classpathentry kind="lib" path="Gate utils/lib/gate-asm.jar"/>
+	<classpathentry kind="lib" path="Gate utils/lib/gate-compiler-jdt.jar"/>
+	<classpathentry kind="lib" path="Gate utils/lib/ivy.jar"/>
+	<classpathentry kind="lib" path="Gate utils/lib/java-getopt.jar"/>
+	<classpathentry kind="lib" path="Gate utils/lib/java2html.jar"/>
+	<classpathentry kind="lib" path="Gate utils/lib/javacc.jar"/>
+	<classpathentry kind="lib" path="Gate utils/lib/jaxen.jar"/>
+	<classpathentry kind="lib" path="Gate utils/lib/jdom.jar"/>
+	<classpathentry kind="lib" path="Gate utils/lib/jempbox.jar"/>
+	<classpathentry kind="lib" path="Gate utils/lib/junit.jar"/>
+	<classpathentry kind="lib" path="Gate utils/lib/log4j.jar"/>
+	<classpathentry kind="lib" path="Gate utils/lib/lucene-core.jar"/>
+	<classpathentry kind="lib" path="Gate utils/lib/metadata-extractor.jar"/>
+	<classpathentry kind="lib" path="Gate utils/lib/nekohtml.jar"/>
+	<classpathentry kind="lib" path="Gate utils/lib/pdfbox.jar"/>
+	<classpathentry kind="lib" path="Gate utils/lib/poi-ooxml-schemas.jar"/>
+	<classpathentry kind="lib" path="Gate utils/lib/poi-ooxml.jar"/>
+	<classpathentry kind="lib" path="Gate utils/lib/poi-scratchpad.jar"/>
+	<classpathentry kind="lib" path="Gate utils/lib/poi.jar"/>
+	<classpathentry kind="lib" path="Gate utils/lib/spring-aop.jar"/>
+	<classpathentry kind="lib" path="Gate utils/lib/spring-beans.jar"/>
+	<classpathentry kind="lib" path="Gate utils/lib/spring-core.jar"/>
+	<classpathentry kind="lib" path="Gate utils/lib/tika-core.jar"/>
+	<classpathentry kind="lib" path="Gate utils/lib/tika-parsers.jar"/>
+	<classpathentry kind="lib" path="Gate utils/lib/wstx-lgpl.jar"/>
+	<classpathentry kind="lib" path="Gate utils/lib/xercesImpl.jar"/>
+	<classpathentry kind="lib" path="Gate utils/lib/xmlbeans.jar"/>
+	<classpathentry kind="lib" path="Gate utils/lib/xmlunit.jar"/>
+	<classpathentry kind="lib" path="Gate utils/lib/xpp3.jar"/>
+	<classpathentry kind="lib" path="Gate utils/lib/xstream.jar"/>
+	<classpathentry kind="lib" path="Gate utils/bin/gate.jar"/>
+	<classpathentry kind="lib" path="mysql-connector-java-5.1.20-bin.jar"/>
+	<classpathentry kind="lib" path="Gate utils/bin/gateLauncher.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

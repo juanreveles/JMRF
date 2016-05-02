@@ -1,0 +1,4 @@
+User=pipo
+password=pipo
+AddressFile=file:\C:\Users\gera\Documents\Tesis\ProyectosPrueba\Bridge\PatronBridge5
+Databasename=ArchRecovery

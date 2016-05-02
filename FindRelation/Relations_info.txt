@@ -1,0 +1,6 @@
+3 AbstractFigura IColor file:/C:/Users/gera/Documents/Tesis/ProyectosPrueba/Bridge/PatronBridge5/AbstractFigura.java
+5 BridgeMain Circulo file:/C:/Users/gera/Documents/Tesis/ProyectosPrueba/Bridge/PatronBridge5/BridgeMain.java
+5 BridgeMain Rojo file:/C:/Users/gera/Documents/Tesis/ProyectosPrueba/Bridge/PatronBridge5/BridgeMain.java
+2 Circulo AbstractFigura file:/C:/Users/gera/Documents/Tesis/ProyectosPrueba/Bridge/PatronBridge5/Circulo.java
+1 Negro IColor file:/C:/Users/gera/Documents/Tesis/ProyectosPrueba/Bridge/PatronBridge5/Negro.java
+1 Rojo IColor file:/C:/Users/gera/Documents/Tesis/ProyectosPrueba/Bridge/PatronBridge5/Rojo.java

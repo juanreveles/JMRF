@@ -1,0 +1,97 @@
+Imports:{
+/* En esta parte se definen las librerias que permiten la utilización de java
+dentro de las reglas JAPE */
+
+import java.io.*;
+}
+
+/****Etiqueta que se le asigna a la REGLA puede ser cualquier nombre****/
+Phase:DEPENDENCY
+
+/****Declaracón de la entrada de datos que recibe la REGLA estos datos provienen del Recurso Gazetter "Palabras Reservadas" ****/
+
+Input:keyword Token 
+
+/*****Esta fase permite el primer filtro de la Regla, Detecta todas las anotaciones
+   pero no permite Repeticiones*****/
+Options: control =  all debug = false
+
+/****Nombre de la Regla JAPE****/
+
+Rule: dependency
+
+/****Sección de la Parte LHS(Lado Izquierdo de la regla) empieza la declaración del patron a detectar con expresiones regulares
+ Esta regla detecta el Nombre de la clase que contiene Instancias hacia los otros objetos, Ejemplo:
+ class hello{
+ public static void main(String Args []){
+ Class objeto = new class();}
+}
+****/  	
+ /****EXPRESIONES REGULARES****/
+ 
+   	(
+   	({keyword.majorType=="class"})
+   	({Token}):source
+	(({Token.string != "class"})*)
+   	(({Token.kind== "word"}))
+   	({Token.string == "="})
+	({keyword.majorType == "instancia"})
+	({Token.kind =="word"}):target
+	)
+
+-->  
+{
+
+/****Las lineas anteriores nos permiten crae un archivo .txt en el cual
+se contendran los resultados obtenidos con esta regla¨****/
+
+FileWriter fichero = null;
+PrintWriter pw = null;
+	try
+	{
+	fichero = new FileWriter("Relations_info.txt",true);
+	pw = new PrintWriter(fichero);
+
+/****Permite crear una variable de tipo anotacion que almacenera los token detectados con la expresion regular****/
+AnnotationSet Source = bindings.get("source");
+AnnotationSet Target =bindings.get("target");
+
+/**** Declaramos una nueva varible que nos permitira recorren cada uno de los token detectados****/
+
+Annotation target = Target.iterator().next();
+Annotation source = Source.iterator().next();
+
+/****Estableceremos las caracteristicas o semantica que debe tener nuestra regla JAPE, esto sera visible solamente si se desea aplicar la regla en la GUI de GATE ****/
+
+FeatureMap features = Factory.newFeatureMap();
+features.put("source", source.getFeatures().get("string"));
+features.put("target",target.getFeatures().get("string"));
+pw.println("5"+" "+source.getFeatures().get("string").toString()+" "+target.getFeatures().get("string").toString()+" "+doc.getSourceUrl().toString());
+
+/**** Utilizacion del metodo outputAs.add que permite crear un boton de seleccion que permite darle click en el y
+asi observar los resultados en la GUI, Esto solamente se puede observar si la Regla se Implmenta en la GUI GATE****/
+
+outputAS.add(Source.firstNode(), Source.lastNode(), "DependencySource",features);
+outputAS.add(Target.firstNode(), Target.lastNode(), "DependencyTarget",features);
+		
+		/**** Las siguientes lineas permiten mostrar en pantalla si se genero algun error durante la creacion al archivo que almacena 
+los resultados de la expresion regular ****/
+
+		}
+		// Catches any error conditions
+		catch (Exception e)
+		{
+			System.err.println ("Unable to write to file");
+			System.exit(-1);
+		}
+		finally {
+		    try {
+		    if (null != fichero){
+		    fichero.close();
+		    }
+		    }catch(Exception e2){
+        	e2.printStackTrace();
+		}
+		}
+
+}

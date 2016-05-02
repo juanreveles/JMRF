@@ -1,0 +1,4 @@
+<Configuration>
+	<Database name="ArchRecovery" user="root" password="" driver_path="jdbc:mysql://localhost:3306/" driver_type="org.gjt.mm.mysql.Driver"/>
+	<Project root_path="file:C:\Users\gera\Documents\Tesis\ProyectosPrueba\jrefactory-2.6.24-full"/>
+</Configuration>

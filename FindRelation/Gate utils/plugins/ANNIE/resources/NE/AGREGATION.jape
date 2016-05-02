@@ -1,0 +1,180 @@
+Imports:{
+/* En esta parte se definen las librerias que permiten la utilizaci�n de java
+dentro de las reglas JAPE */
+import java.io.*;
+}
+
+/****Etiqueta que se le asigna a la REGLA puede ser cualquier nombre****/
+
+Phase:AGREGATION
+
+/****Declarac�n de la entrada de datos que recibe la REGLA estos datos provienen del Recurso Gazetter "Palabras Reservadas" ****/
+
+Input:keyword Token 
+
+/*****Esta fase permite el primer filtro de la Regla, Detecta todas las anotaciones
+   pero no permite Repeticiones*****/
+   
+Options: control = all debug = false
+
+/****Las siguientes expresiones regulares estan creadas con la finalidad de detectar los 
+parametros que contienen los contructores y asi poder realziar su comparacion posteriormente
+se creo una Macro con la finalizad de simplificar el codigo y facilitar su entendimiento****/
+
+Macro: PARAMETROS
+(
+({Token})
+	(({Token, Token.string !=")", 
+	Token.string !="class", 
+	Token.string !="public", 
+	Token.string !="private", 
+	Token.string !="protected"})*)
+)
+
+/****Nombre de la Regla JAPE****/
+
+Rule: agregacion
+
+/****Secci�n de la Parte LHS(Lado Izquierdo de la regla) empieza la declaraci�n del patron a detectar con expresiones regulares
+ Esta regla detecta el Nombre de la clase que contiene sus constructores, los parametros que reciben los constructores
+ y sus intancias contiene hacia los otros objetos, Ejemplo:
+ 
+class Node {                                                   // (1)
+    private Object data;    // Data
+    private Node   next;    // Next node
+
+    // Constructor for initializing data and reference to the next node.
+    private Node(Object data, Node next) {
+        data = data;
+        next = next;
+
+    }
+
+    // Methods
+    public void   setData(Object obj) { data = obj; }
+    public Object getData()           { return data; }
+    public void   setNext(Node node)  { next = node; }
+    public Node   getNext()           { return next; }
+}
+****/   
+
+/****EXPRESIONES REGULARES****/
+
+   	(
+   	({keyword.majorType =="class"})
+   	({Token.kind=="word"}):clases /*** Los ":" significan una etiqueta, es decir el resultado que deseamos mostrar****/
+   	(({Token.string != "class"})*)
+   	({keyword.majorType=="tiposclases"})
+   	({Token}):source
+   	({Token.string =="("})
+   	(PARAMETROS):parametros
+	({Token.string ==")"})
+	(({Token, !keyword.majorType=="tiposclases", Token.string !="class",Token.string !="static",Token.string !="void"})*)
+	(({Token.kind== "word"}))
+   	({Token.string == "="})
+	({Token.kind =="word"}):target
+	)
+
+-->  
+/**** Aqui comienza la otra parte de la regla es decir el RHS(Lado Derecho de la Relga) el cual nos permite realizar
+el analisis consecuente a la expresiones regulares codificadas en la parte Izquierda, tambien
+nos indica el como queremos deplegar los datos que obtnemos****/
+
+{
+/****Las lineas anteriores nos permiten crae un archivo .txt en el cual
+se contendran los resultados obtenidos con esta regla�****/
+
+FileWriter fichero = null;
+PrintWriter pw = null;
+	try
+	{
+	fichero = new FileWriter("Relations_info.txt",true);
+	pw = new PrintWriter(fichero);
+/****Creando una variable de tipo anotacion que almacenera los token detectados con las etiquetas de la expresion regular****/
+
+AnnotationSet Source = bindings.get("source");
+AnnotationSet Target = bindings.get("target");
+AnnotationSet Clase = bindings.get("clases");
+AnnotationSet Parametros = bindings.get("parametros");
+
+/**** Declaramos una nueva varible que nos permitira recorren cada uno de los token detectados****/
+
+Annotation target = Target.iterator().next();
+Annotation source = Source.iterator().next();
+Annotation clase = Clase.iterator().next();
+
+/****Estableceremos las caracteristicas o semantica que debe tener nuestra regla JAPE, esto sera visible solamente si se desea aplicar la regla en la GUI de GATE ****/
+
+FeatureMap features = Factory.newFeatureMap();
+features.put("source", source.getFeatures().get("string"));
+features.put("target",target.getFeatures().get("string"));
+
+//Set set_target = target.getFeatures().keySet();
+
+//System.out.println(set_target.toString());
+
+/**** Declaracion de variables de tipo string que contienen el valor de la anotacion "target" y "source" ****/
+
+String target1=target.getFeatures().get("string").toString();
+String fuente=source.getFeatures().get("string").toString();
+
+/****Declaramos una variable parametros de tipo Annotation para que se almacene en un solo espacio el valor de todos los parametros y poder realziar
+la comparacion entre los parametros y las instancias obtenidas***/
+/*
+//Creamos una relacion entre dato y clase
+for(Annotation parametros:Parametros){
+
+	System.out.println("start: " + parametros.getStartNode().getOffset());
+	System.out.println("end: " + parametros.getEndNode().getOffset());
+	
+	System.out.println("by offset: " + Parametros.get(105 + 2));
+}
+
+
+System.out.println(Parametros.toString());
+*/
+for(Annotation parametros:Parametros){
+//System.out.println("id " + parametros.getId());
+
+String parametro=parametros.getFeatures().get("string").toString();
+
+if (target1.equals(parametro)){
+
+int id_parametro = parametros.getId() - 2;
+
+String s_target = Parametros.get(id_parametro).getFeatures().get("string").toString();
+
+//System.out.println(s_target);
+
+//System.out.println(parametro);
+//System.out.println("4"+" "+clase.getFeatures().get("string").toString()+" "+target.getFeatures().get("string").toString()+" "+doc.getSourceUrl().toString());
+//pw.println("3"+" "+clase.getFeatures().get("string").toString()+" "+target.getFeatures().get("string").toString()+" "+doc.getSourceUrl().toString());
+pw.println("3"+" "+clase.getFeatures().get("string").toString()+" "+s_target+" "+doc.getSourceUrl().toString());
+}else{}
+} //FIN del ciclo FOR
+
+/**** Utilizacion del metodo outputAs.add que permite crear un boton de seleccion que permite darle click en el y
+asi observar los resultados en la GUI, Esto solamente se puede observar si la Regla se Implmenta en la GUI GATE****/
+
+outputAS.add(Source.firstNode(), Source.lastNode(), "AgregationSource",features);
+outputAS.add(Target.firstNode(), Target.lastNode(), "AgregationTarget",features);
+outputAS.add(Clase.firstNode(), Clase.lastNode(), "AgregationClase",features);
+
+/**** Las siguientes lineas permiten mostrar en pantalla si se genero algun error durante la creacion al archivo que almacena 
+los resultados de la expresion regular ****/
+
+}catch (Exception e)
+{
+System.err.println ("Unable to write to file");
+System.exit(-1);
+}
+finally {
+    try {
+    if (null != fichero){
+    fichero.close();
+    }
+    }catch(Exception e2){
+       	e2.printStackTrace();
+	}
+	}
+}

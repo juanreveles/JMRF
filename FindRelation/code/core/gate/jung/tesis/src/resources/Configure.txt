@@ -1,0 +1,4 @@
+User=root
+password=1q2w3e
+AddressFile=file:/var/run/media/jmauricio/61E5477036607AF4/respaldo_ubuntu_encriptado/Documentos/tesis/relations/test2/HARDCODERS_TAREA2_03052012/sistemaA/
+Databasename=ArchRecovery

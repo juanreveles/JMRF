@@ -1,0 +1,57 @@
+/* IMPORTACION DE LAS LIBRERIAS UTILES DE JAVA*/
+Imports:{
+import java.io.*;
+import java.io.File;
+import java.io.IOException;
+}
+/* COMIENZAN LAS REGLAS JAPE (LHS), ESTAS REGLAS TERMINAN      CUANDO SE ENCUENTRA LA SEÑAL "-->".*/
+
+Phase:GENERALIZATION
+Input:keyword Token 
+Options: control = appelt debug= true
+Rule: generalizacion
+/*pureba para borrar el extends, de las palabras reservadas toma la palabra clase para ubicar la clase*/
+(
+	({keyword.majorType=="modificador"})*
+	({keyword.majorType=="class"})
+):temp
+(      
+//aqui toma la palabra que hace referencia a la clase hijo		
+	({Token})
+):class
+/*esto es para que tome la palabra siempre y cuando se anteponga     a la palabra "extends"*/
+({Token.string==~"extends"})	
+({Token}):clasep
+-->
+/* COMIENZA LAS REGLAS JAPE (RHS) CON CODIGO JAVA INCLUIDO*/
+{
+int todo=0;
+int i=2;
+//** Aqui mandamos creamos una variable que sera de tipo "File" y que nos permitira escribir los resultados de la regla en un archivo externo.*/
+FileWriter fichero = null;
+PrintWriter pw = null;
+	try
+		{
+		fichero = new FileWriter("Relations_info.txt",true);
+		pw = new PrintWriter(fichero);
+
+/* Las siguientes lineas de codigo son de la regla (RHS) es decir estamos diciendo que queremos hacer con las anotaciones de las reglas (LHS).*/
+
+AnnotationSet clasehijo = bindings.get("class");
+AnnotationSet clasePadre =bindings.get("clasep");
+Annotation clasepAnn = clasePadre.iterator().next();
+Annotation clasehAnn = clasehijo.iterator().next();
+FeatureMap features = Factory.newFeatureMap();
+features.put("Clase", clasehAnn.getFeatures().get("string"));
+features.put("extiende de",clasepAnn.getFeatures().get("string"));
+outputAS.add(clasehijo.firstNode(), clasehijo.lastNode(), "Generalizacion",features);
+pw.println(i+" "+clasehAnn.getFeatures().get("string").toString()+" "+clasepAnn.getFeatures().get("string").toString()+" "+doc.getSourceUrl().toString());
+fichero.close();	
+		}
+		// Catches any error conditions
+		catch (IOException e)
+		{
+			System.err.println ("Unable to write to file");
+			System.exit(-1);
+		}
+}

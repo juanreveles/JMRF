@@ -1,0 +1,128 @@
+Imports:{
+/* En esta parte se definen las librerias que permiten la utilización de java
+dentro de las reglas JAPE */
+import java.io.*;
+}
+/****Etiqueta que se le asigna a la REGLA puede ser cualquier nombre****/
+
+Phase:COMPOSITION
+
+/****Declaracón de la entrada de datos que recibe la REGLA estos datos provienen del Recurso Gazetter "Palabras Reservadas" ****/
+
+Input:keyword Token 
+/*****Esta fase permite el primer filtro de la Regla, Detecta todas las anotaciones
+   pero no permite Repeticiones*****/
+   
+Options: control =  all debug = false  
+
+/****Nombre de la Regla JAPE****/
+
+Rule: composicion   
+   	
+ /****Sección de la Parte LHS(Lado Izquierdo de la regla) empieza la declaración del patron a detectar con expresiones regulares
+ Esta regla detecta el Nombre de la clase que contiene sus constructores y las instancias que los constructores 
+ contiene hacia los otros objetos, Ejemplo:
+ 
+ public class Book {
+     private List pages = new ArrayList();
+ 
+     public Book() {
+ 	Page page = new Page();
+ }
+     public void addPage(String text) {
+     page.addText(text);
+     pages.add(page);
+     }
+ ****/  	
+ /****EXPRESIONES REGULARES****/
+   	(
+   	({keyword.majorType =="class"})
+   	({Token.kind=="word"}):clases /*** Los ":" significan una etiqueta, es decir el resultado que deseamos mostrar****/
+   	(({Token.string != "class"})*)
+   	({keyword.majorType=="tiposclases"})
+   	({Token}):source
+   	({Token.string =="("})
+	({Token.string ==")"})
+	(({Token, !keyword.majorType=="tiposclases", Token.string !="class",Token.string !="static",Token.string !="void"})*)
+	(({Token.kind== "word"}))
+   	({Token.string == "="})
+	({keyword.majorType == "instancia"})
+	({Token.kind =="word"}):target
+	)
+
+-->  
+	/**** Aqui comienza la otra parte de la regla es decir el RHS(Lado Derecho de la Relga) el cual nos permite realizar
+	el analisis consecuente a la expresiones regulares codificadas en la parte Izquierda, tambien
+	nos indica el como queremos deplegar los datos que obtnemos****/
+
+{
+/****Las lineas anteriores nos permiten crae un archivo .txt en el cual
+se contendran los resultados obtenidos con esta regla¨****/
+
+FileWriter fichero = null;
+PrintWriter pw = null;
+	try
+	{
+	fichero = new FileWriter("Relations_info.txt",true);
+	pw = new PrintWriter(fichero);
+
+/****Permite crear una variable de tipo anotacion que almacenera los token detectados con la expresion regular****/
+
+AnnotationSet Source = bindings.get("source"); 
+AnnotationSet Target =bindings.get("target");  
+AnnotationSet Clase =bindings.get("clases");   
+
+/**** Declaramos una nueva varible que nos permitira recorren cada uno de los token detectados****/
+
+Annotation target = Target.iterator().next();  
+Annotation source = Source.iterator().next();
+Annotation clase = Clase.iterator().next();
+
+/****Estableceremos las caracteristicas o semantica que debe tener nuestra regla JAPE, esto sera visible solamente si se desea aplicar la regla en la GUI de GATE ****/
+
+FeatureMap features = Factory.newFeatureMap();
+features.put("source", source.getFeatures().get("string"));
+features.put("target",target.getFeatures().get("string"));
+
+/**** Declaracion de una variable de tipo string que contiene el valor de la anotacion "clase"****/
+
+String match=clase.getFeatures().get("string").toString();
+
+/***** Con la Declaracion anterior relizamos una comparacion de todos los constructores declarados
+ya que una clase puede tener varios constructores en el caso de composicion el constructor debe ser el mismo
+nombre de la clase por eso es que se realiza la comparacion con el contenido de la variable anotacion "source", en caso de ser 
+igual el nombre del constructor y la clase se imprimira un ID, el contenido de la Annotation "source", el contenido de la Annotation
+"Target" y la ubicacion donde se encuentra el archivo.****/
+
+if(match.equals(source.getFeatures().get("string").toString())){
+pw.println("4"+" "+source.getFeatures().get("string").toString()+" "+target.getFeatures().get("string").toString()+" "+clase.getFeatures().get("string").toString()+" "+doc.getSourceUrl().toString());
+}else{
+}
+
+/**** Utilizacion del metodo outputAs.add que permite crear un boton de seleccion que permite darle click en el y
+asi observar los resultados en la GUI, Esto solamente se puede observar si la Regla se Implmenta en la GUI GATE****/
+
+outputAS.add(Source.firstNode(), Source.lastNode(), "CompositionSource",features);
+outputAS.add(Target.firstNode(), Target.lastNode(), "CompositionTarget",features);
+outputAS.add(Clase.firstNode(), Clase.lastNode(), "CompositionClase",features);
+
+}
+
+/**** Las siguientes lineas permiten mostrar en pantalla si se genero algun error durante la creacion al archivo que almacena 
+los resultados de la expresion regular ****/
+
+		catch (Exception e)
+		{
+			System.err.println ("Unable to write to file");
+			System.exit(-1);
+		}
+		finally {
+		    try {
+		    if (null != fichero){
+		    fichero.close();
+		    }
+		    }catch(Exception e2){
+        	e2.printStackTrace();
+		}
+		}
+}

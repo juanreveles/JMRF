@@ -1,0 +1,10 @@
+class.lst:class:::keyword
+datatype.lst:tipo:::keyword
+extends.lst:extends:::keyword
+import.lst:import:::keyword
+interface.lst:interface:::keyword
+modifier.lst:modificador:::keyword
+instance.lst:instancia:::keyword
+collections.lst:colecciones:::keyword
+otherwords.lst:otherwords:::keyword
+tiposclase.lst:tiposclases:::keyword

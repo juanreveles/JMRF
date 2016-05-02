@@ -1,0 +1,128 @@
+Imports:{
+/* En esta parte se definen las librerias que permiten la utilización de java
+dentro de las reglas JAPE */
+import java.io.*;
+import java.io.File;
+import java.io.IOException;
+}
+
+/**** COMIENZAN LAS REGLAS JAPE (LHS), ESTAS REGLAS TERMINAN      CUANDO SE ENCUENTRA LA SEÑAL "-->".****/
+
+/****Etiqueta que se le asigna a la REGLA puede ser cualquier nombre****/
+Phase:REALIZATION
+
+/****Declaracón de la entrada de datos que recibe la REGLA estos datos provienen del Recurso Gazetter "Palabras Reservadas" ****/
+
+Input:keyword Token 
+
+/*****Esta fase permite el primer filtro de la Regla, Detecta todas las anotaciones
+   pero no permite Repeticiones*****/
+   
+Options: control = first debug= true
+
+/****Nombre de la Regla JAPE****/
+
+Rule: realization  
+/****Sección de la Parte LHS(Lado Izquierdo de la regla) empieza la declaración del patron a detectar con expresiones regulares
+ Esta regla detecta el Nombre de la clase principal, si existe un extends y el nombre de las interfaces que se implementan
+
+<modifier> class <name> [extends <superclass>] 
+[implements<interface> [,<interface>]* ] {
+<member_declaration>*
+}
+
+****/
+
+/****EXPRESIONES REGULARES****/
+
+   (
+	({keyword.majorType=="modificador"})*
+	({keyword.majorType == class})
+	({Token}):clasei
+	({keyword.majorType == extends}
+	 ({Token}))?	
+	{keyword.majorType == interface}
+	):temp
+	  (
+        ({Token}
+	   (({Token.string == ","})
+	   {Token})*
+	  )
+    ):interface
+    ({Token.string=="{"})
+    
+    
+--> 
+
+/* COMIENZA LAS REGLAS JAPE (RHS) CON CODIGO JAVA INCLUIDO*/
+{
+/**** Aqui comienza la otra parte de la regla es decir el RHS(Lado Derecho de la Relga) el cual nos permite realizar
+el analisis consecuente a la expresiones regulares codificadas en la parte Izquierda, tambien
+nos indica el como queremos deplegar los datos que obtnemos****/
+
+int todo=1;
+String Ainterface="";
+int i=1;
+
+/***** Aqui mandamos creamos una variable que sera de tipo "File" y que nos permitira escribir los resultados de la regla en un archivo externo.****/
+
+FileWriter fichero = null;
+PrintWriter pw = null;
+	try
+		{
+		fichero = new FileWriter("Relations_info.txt",true);
+		pw = new PrintWriter(fichero);
+
+/****Permite crear una variable de tipo anotacion que almacenera los token detectados con la expresion regular****/
+
+AnnotationSet interfaces = bindings.get("interface");
+AnnotationSet clasesi=bindings.get("clasei");
+
+/**** Declaramos una nueva varible que nos permitira recorren cada uno de los token detectados****/
+
+Annotation claseiAnn=clasesi.iterator().next();
+
+/****Estableceremos las caracteristicas o semantica que debe tener nuestra regla JAPE, esto sera visible solamente si se desea aplicar la regla en la GUI de GATE ****/
+
+FeatureMap features = Factory.newFeatureMap();
+
+/****Declaramos una variable inter de tipo Annotation para que se almacene en un solo espacio el valor de todos las interfaces y poder realziar
+la comparacion de estas***/
+
+for(Annotation inter : interfaces)
+	{
+	
+	String match= inter.getFeatures().get("string").toString();
+        if(match.equals(",")){
+	}
+	else{
+        pw.println(i+" "+claseiAnn.getFeatures().get("string").toString()+" "+match+" "+doc.getSourceUrl().toString());
+	  Ainterface=Ainterface+match+" ";
+	  todo++;
+	    }
+	}
+	
+/****Declaramos una variable inter de tipo Annotation para que se almacene en un solo espacio el valor de todos las interfaces y poder realziar
+la comparacion de estas***/
+
+features.put("implementa",Ainterface);
+features.put("interfaces encontradas",todo-1);
+features.put("clase",claseiAnn.getFeatures().get("string"));
+
+/**** Utilizacion del metodo outputAs.add que permite crear un boton de seleccion que permite darle click en el y
+asi observar los resultados en la GUI, Esto solamente se puede observar si la Regla se Implmenta en la GUI GATE****/
+
+outputAS.add(interfaces.firstNode(), interfaces.lastNode(),"Realizacion",features);
+
+/**** Las siguientes lineas permiten mostrar en pantalla si se genero algun error durante la creacion al archivo que almacena 
+los resultados de la expresion regular ****/
+
+fichero.close();	
+		}
+		// Catches any error conditions
+		catch (IOException e)
+		{
+		System.err.println ("Unable to write to file");
+		System.exit(-1);
+		}
+}
