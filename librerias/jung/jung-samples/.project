@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<projectDescription>
+  <name>jung-samples</name>
+  <comment>Sample programs using jung2. Nearly all jung2 capabilities are demonstrated here.
+  Please study the source code for these examples prior to asking how to do something. NO_M2ECLIPSE_SUPPORT: Project files created with the maven-eclipse-plugin are not supported in M2Eclipse.</comment>
+  <projects>
+    <project>jung-api</project>
+    <project>jung-visualization</project>
+    <project>jung-algorithms</project>
+    <project>jung-graph-impl</project>
+    <project>jung-io</project>
+  </projects>
+  <buildSpec>
+    <buildCommand>
+      <name>org.eclipse.jdt.core.javabuilder</name>
+    </buildCommand>
+  </buildSpec>
+  <natures>
+    <nature>org.eclipse.jdt.core.javanature</nature>
+  </natures>
+</projectDescription>

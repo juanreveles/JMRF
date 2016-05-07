@@ -1,0 +1,4 @@
+<Configuration>
+	<Database name="archrecovery" user="root" password="1q2w3e" driver_path="jdbc:mysql://localhost:3306/" driver_type="org.gjt.mm.mysql.Driver"/>
+	<Project root_path="file:/home/jmauricio/Programacion/relations/test2/"/>
+</Configuration>

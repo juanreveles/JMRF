@@ -1,0 +1,4 @@
+User=root
+password=1q2w3e
+AddressFile=C:\Users\Juan Manuel\Documents\test\tesis\pruebas\Gate\pruebas\test2\HARDCODERS_TAREA2_03052012\sistemaA
+Databasename=ArchRecovery

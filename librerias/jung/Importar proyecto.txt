@@ -1,0 +1,4 @@
+1. Copiar m2 a users/<user>
+2. Agregar todos los proyectos de jung
+3. Agregar proyecto de tesis
+4. Cambiar todas las rutas del java build del proyecto de tesis manualmente
